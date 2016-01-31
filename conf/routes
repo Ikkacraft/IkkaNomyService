@@ -1,0 +1,19 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET           /                                             @controllers.Application.index
+
+# Accounts
+GET           /accounts                                     @controllers.Accounts.getAccounts()
+GET           /accounts/:account_id                         @controllers.Accounts.getAccount(account_id: Long)
+GET           /accounts/:account_id/transactions        @controllers.Accounts.getTransactionsByAccount(account_id: Long)
+POST          /accounts                                     @controllers.Accounts.createAccount()
+PUT           /accounts/:account_id                         @controllers.Accounts.updateAccount(account_id: Long)
+DELETE        /accounts/:account_id                         @controllers.Accounts.deleteAccount(account_id: Long)
+
+# Transaction
+GET           /transactions                                 @controllers.Transactions.getTransactions()
+GET           /transactions/:transaction_id                 @controllers.Transactions.getTransaction(transaction_id: Long)
+POST          /transactions                                 @controllers.Transactions.createTransaction()
