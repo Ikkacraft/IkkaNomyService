@@ -23,3 +23,10 @@ dependencies:
 test:
   override:
     - sbt test
+
+deployment:
+  production: # just a label; label names are completely up to you
+    branch: master
+    commands:
+      - sbt war
+      - scp target/ikkanomy.war $USER@$HOSTNAME:$DEPLOY_PATH
