@@ -20,3 +20,5 @@ Play2WarKeys.servletVersion := "3.1"
 Play2WarKeys.targetName := Some("ikkanomy")
 
 unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/test" )
+
+routesGenerator := InjectedRoutesGenerator
