@@ -2,12 +2,13 @@ package controllers
 
 import javax.inject.Inject
 
+import io.swagger.annotations.Api
 import models.Transaction
 import play.api.libs.json.Json
 import play.api.mvc._
 import services.{AccountService, TransactionService}
 
-//@Api(value = "/transactions", description = "Operations about transactions between accounts")
+@Api(value = "/transactions", description = "Operations about transactions between accounts")
 class Transactions @Inject()(transactionService: TransactionService, accountService: AccountService) extends Controller {
   def getTransactions() = Action {
     Ok(Json.toJson(transactionService.getAll()))
@@ -25,11 +26,9 @@ class Transactions @Inject()(transactionService: TransactionService, accountServ
 
     val transaction = new Transaction(amount, account_creditor_id, account_debtor_id, description)
 
-
-    val id = transactionService.create(transaction)
-    id match {
+    transactionService.create(transaction) match {
       case -1 => BadRequest
-      case _ => {
+      case id => {
         account_creditor_id match {
           case Some(account_creditor_id) => {
             val account = accountService.get(account_creditor_id)
@@ -37,7 +36,7 @@ class Transactions @Inject()(transactionService: TransactionService, accountServ
             account.setBalance(balance)
             accountService.update(account)
           }
-          case none => None
+          case None => None
         }
 
         account_debtor_id match {
@@ -47,7 +46,7 @@ class Transactions @Inject()(transactionService: TransactionService, accountServ
             account.setBalance(balance)
             accountService.update(account)
           }
-          case none => None
+          case None => None
         }
 
         Created(Json.toJson(id))
