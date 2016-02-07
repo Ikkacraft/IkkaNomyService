@@ -6,6 +6,7 @@ import play.api.libs.json.{Json, Writes}
 
 /**
  * Contains data related to an account
+ *
  * @param account_id      Account id
  * @param account_balance Account Balance
  * @param description     Description of the account

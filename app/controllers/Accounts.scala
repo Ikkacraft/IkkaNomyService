@@ -47,9 +47,7 @@ class Accounts @Inject()(accountService: AccountService) extends Controller {
     val id = accountService.create(account)
     id match {
       case -1 => BadRequest("The account could not be created")
-      case _ => {
-        Created("The account " + Json.toJson(id) + " has been successfully created")
-      }
+      case _  => Created(Json.toJson(id))
     }
   }
 
@@ -69,9 +67,7 @@ class Accounts @Inject()(accountService: AccountService) extends Controller {
     val id = accountService.update(account)
     id match {
       case 0 => BadRequest("The account " + account_id + " could not be updated")
-      case _ => {
-        Ok("The account " + Json.toJson(id) + " has been successfully updated")
-      }
+      case _ => Ok("The account " + Json.toJson(id) + " has been successfully updated")
     }
   }
 

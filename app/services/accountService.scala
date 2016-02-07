@@ -1,8 +1,8 @@
 package services
 
 import anorm._
-import models.{Transaction, Account}
-import play.api.Play._
+import models.{Account, Transaction}
+import play.api.Play.current
 import play.api.db._
 
 
