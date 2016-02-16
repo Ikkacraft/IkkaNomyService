@@ -18,8 +18,15 @@ class Accounts @Inject()(accountService: AccountService) extends Controller {
     notes = "Return a list of accounts",
     response = classOf[models.Account], httpMethod = "GET")
   @ApiResponses(Array(new ApiResponse(code = 404, message = "Users not found"), new ApiResponse(code = 200, message = "Users found")))
-  def getAccounts() = Action {
-    Ok(Json.toJson(accountService.getAll()))
+  def getAccounts() = Action { request =>
+    request.accepts("application/json") || request.accepts("text/json") match {
+      case true => Ok(Json.toJson(accountService.getAll()))
+      case false => {
+        val accounts :List[Account] = accountService.getAll()
+        Ok(<accounts>{ accounts.map(a => a.toXml) }</accounts>)
+      }
+    }
+
   }
 
   @ApiOperation(
@@ -28,8 +35,11 @@ class Accounts @Inject()(accountService: AccountService) extends Controller {
     notes = "Return a specific account",
     response = classOf[models.Account], httpMethod = "GET")
   @ApiResponses(Array(new ApiResponse(code = 404, message = "User not found"), new ApiResponse(code = 200, message = "User found")))
-  def getAccount(account_id: Long) = Action {
-    Ok(Json.toJson(accountService.get(account_id)))
+  def getAccount(account_id: Long) = Action { request =>
+    request.accepts("application/json") || request.accepts("text/json") match {
+      case true => Ok(Json.toJson(accountService.get(account_id)))
+      case false => Ok(accountService.get(account_id).toXml)
+    }
   }
 
   @ApiOperation(

@@ -14,6 +14,14 @@ import play.api.libs.json.{Json, Writes}
 case class Account(account_id: Long, var account_balance: BigDecimal, description: Option[String]) {
   def this(account_balance: BigDecimal, description: Option[String]) = this(0, account_balance, description)
 
+  def toXml = {
+    <account>
+      <account_id>{account_id}</account_id>
+      <account_balance>{account_balance}</account_balance>
+      {if (description.isDefined) <description>{description.get}</description> else <description />}
+    </account>
+  }
+
   def setBalance(p: BigDecimal) { account_balance = p }
 }
 

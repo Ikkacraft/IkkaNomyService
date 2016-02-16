@@ -15,6 +15,16 @@ import play.api.libs.json.{Json, Writes}
 case class Transaction(transaction_id: Long, amount: BigDecimal, account_receive: Option[Long], account_send: Option[Long], description: Option[String]) {
   def this(amount: BigDecimal, account_receive: Option[Long], account_send: Option[Long], description: Option[String])
   = this(0, amount, account_receive = None, account_send = None, description)
+
+  def toXml = {
+    <transaction>
+      <transaction_id>{transaction_id}</transaction_id>
+      <amount>{amount}</amount>
+      {if (account_receive.isDefined) <account_receive>{account_receive.get}</account_receive> else <account_receive />}
+      {if (account_send.isDefined) <account_send>{description.get}</account_send> else <account_send />}
+      {if (description.isDefined) <description>{description.get}</description> else <description />}
+    </transaction>
+  }
 }
 
 object Transaction {
