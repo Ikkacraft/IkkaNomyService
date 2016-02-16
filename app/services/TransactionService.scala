@@ -15,10 +15,10 @@ class TransactionService {
     results
   }
 
-  def get(transaction_id: Long): Transaction = {
-    val result: Transaction = DB.withConnection { implicit c =>
+  def get(transaction_id: Long): Option[Transaction] = {
+    val result: Option[Transaction] = DB.withConnection { implicit c =>
       SQL( """SELECT * FROM TRANSACTION WHERE  ID = {transaction_id}""")
-        .on('transaction_id -> transaction_id).as(Transaction.parser.single)
+        .on('transaction_id -> transaction_id).as(Transaction.parser.singleOpt)
     }
     result
   }

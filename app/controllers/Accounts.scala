@@ -2,8 +2,8 @@ package controllers
 
 import javax.inject.Inject
 
-import io.swagger.annotations.{ApiResponse, ApiResponses, ApiOperation, Api}
-import models.Account
+import io.swagger.annotations.{Api, ApiOperation, ApiResponse, ApiResponses}
+import models.{Transaction, Account}
 import play.api.libs.json.Json
 import play.api.mvc._
 import services.AccountService
@@ -20,13 +20,15 @@ class Accounts @Inject()(accountService: AccountService) extends Controller {
   @ApiResponses(Array(new ApiResponse(code = 404, message = "Users not found"), new ApiResponse(code = 200, message = "Users found")))
   def getAccounts() = Action { request =>
     request.accepts("application/json") || request.accepts("text/json") match {
-      case true => Ok(Json.toJson(accountService.getAll()))
+      case true =>{
+        val accounts: List[Account] = accountService.getAll()
+        if (accounts.isEmpty) NoContent else Ok(Json.toJson(accounts))
+      }
       case false => {
-        val accounts :List[Account] = accountService.getAll()
-        Ok(<accounts>{ accounts.map(a => a.toXml) }</accounts>)
+        val accounts: List[Account] = accountService.getAll()
+        if (accounts.isEmpty) NoContent else Ok(<accounts>{accountService.getAll().map(a => a.toXml)}</accounts>)
       }
     }
-
   }
 
   @ApiOperation(
@@ -37,8 +39,18 @@ class Accounts @Inject()(accountService: AccountService) extends Controller {
   @ApiResponses(Array(new ApiResponse(code = 404, message = "User not found"), new ApiResponse(code = 200, message = "User found")))
   def getAccount(account_id: Long) = Action { request =>
     request.accepts("application/json") || request.accepts("text/json") match {
-      case true => Ok(Json.toJson(accountService.get(account_id)))
-      case false => Ok(accountService.get(account_id).toXml)
+      case true => {
+        accountService.get(account_id) match {
+          case Some(account) => Ok(Json.toJson(account))
+          case None => NoContent
+        }
+      }
+      case false => {
+        accountService.get(account_id) match {
+          case Some(account) => Ok(account.toXml)
+          case None => NoContent
+        }
+      }
     }
   }
 
@@ -57,7 +69,7 @@ class Accounts @Inject()(accountService: AccountService) extends Controller {
     val id = accountService.create(account)
     id match {
       case -1 => BadRequest("The account could not be created")
-      case _  => Created(Json.toJson(id))
+      case _  => Created("Account " + id + " has been successfully")
     }
   }
 
@@ -77,15 +89,25 @@ class Accounts @Inject()(accountService: AccountService) extends Controller {
     val id = accountService.update(account)
     id match {
       case 0 => BadRequest("The account " + account_id + " could not be updated")
-      case _ => Ok("The account " + Json.toJson(id) + " has been successfully updated")
+      case _ => Ok("The account " + account_id + " has been successfully updated")
     }
   }
 
   def deleteAccount(account_id: Long) = Action {
-    Ok(Json.toJson(accountService.delete(account_id)))
+    accountService.delete(account_id)
+    Ok("Account " + account_id + "has been successfully deleted")
   }
 
-  def getTransactionsByAccount(account_id: Long) = Action {
-    Ok(Json.toJson(accountService.getTransactionsByAccount(account_id)))
+  def getTransactionsByAccount(account_id: Long) = Action { request =>
+    request.accepts("application/json") || request.accepts("text/json") match {
+      case true => {
+        val transactions: List[Transaction] = accountService.getTransactionsByAccount(account_id)
+        if (transactions.isEmpty) NoContent else Ok(Json.toJson(transactions))
+      }
+      case false => {
+        val transactions: List[Transaction] = accountService.getTransactionsByAccount(account_id)
+        if (transactions.isEmpty) NoContent else Ok(<transactions>{accountService.getTransactionsByAccount(account_id).map(a => a.toXml)}</transactions>)
+      }
+    }
   }
 }

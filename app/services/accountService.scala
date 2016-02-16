@@ -14,9 +14,9 @@ class AccountService {
     results
   }
 
-  def get(account_id: Long): Account = {
-    val result: Account = DB.withConnection { implicit c =>
-      SQL( """SELECT * FROM ACCOUNT WHERE ID = {account_id}""").on('account_id -> account_id).as(Account.parser.single)
+  def get(account_id: Long): Option[Account] = {
+    val result: Option[Account] = DB.withConnection { implicit c =>
+      SQL( """SELECT * FROM ACCOUNT WHERE ID = {account_id}""").on('account_id -> account_id).as(Account.parser.singleOpt)
     }
     result
   }
