@@ -17,7 +17,7 @@ class Transactions @Inject()(transactionService: TransactionService, accountServ
     Ok(Json.toJson(transactionService.get(transaction_id)))
   }
 
-  // TODO: cancel transaction if account cant be credit or debtored
+  // TODO: cancel transaction if account cant be credit or debtored (handle negative balance)
   def createTransaction() = Action(parse.json) { implicit request =>
     val amount: BigDecimal = (request.body \ "amount").as[BigDecimal]
     val account_creditor_id: Option[Long] = (request.body \ "account_creditor").asOpt[Long]
