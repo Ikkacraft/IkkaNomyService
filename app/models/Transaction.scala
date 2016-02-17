@@ -14,7 +14,7 @@ import play.api.libs.json.{Json, Writes}
  */
 case class Transaction(transaction_id: Long, amount: BigDecimal, account_receive: Option[Long], account_send: Option[Long], description: Option[String]) {
   def this(amount: BigDecimal, account_receive: Option[Long], account_send: Option[Long], description: Option[String])
-  = this(0, amount, account_receive = None, account_send = None, description)
+  = this(0, amount, account_receive, account_send, description)
 
   def toXml = {
     <transaction>

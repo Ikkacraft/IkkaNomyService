@@ -7,6 +7,7 @@ import play.api.db._
 
 
 class AccountService {
+
   def getAll() = {
     val results: List[Account] = DB.withConnection { implicit c =>
       SQL( """SELECT * FROM ACCOUNT """).as(Account.parser.*)
